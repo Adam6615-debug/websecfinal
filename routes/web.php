@@ -66,6 +66,10 @@ Route::prefix('auth')->group(function () {
 
     Route::get('github', [UsersController::class, 'redirectToGitHub'])->name('redirectToGitHub');
     Route::get('github/callback', [UsersController::class, 'handleGitHubCallback'])->name('handleGitHubCallback');
+    
+    Route::get('twitter', [UsersController::class, 'redirectToTwitter'])->name('redirectToTwitter');
+
+
 });
 
 // Email Verification

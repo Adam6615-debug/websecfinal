@@ -295,6 +295,29 @@ class UsersController extends Controller
     {
         return view('users.addemployee'); // You can change this to any view you want to render
     }
+
+public function redirectToGitHub()
+{
+    return Socialite::driver('github')->redirect();
+}
+public function handleGitHubCallback()
+{
+    $githubUser = Socialite::driver('github')->stateless()->user();
+
+    // Check if user exists
+    $user = User::where('email', $githubUser->getEmail())->first();
+
+    if (!$user) {
+        return redirect()->route('login')->withErrors([
+            'email' => 'No account found with this email. Please sign up.',
+        ]);
+    }
+
+    Auth::login($user);
+
+    return redirect('/'); // or your intended home/dashboard page
+}
+
     public function redirectToFacebook()
     {
     return Socialite::driver('facebook')->stateless()->redirect();
@@ -313,6 +336,40 @@ class UsersController extends Controller
             Auth::login($user)  ;
     }
     
+
+
+ public function redirectToTwitter()
+{
+    return Socialite::driver('twitter')->redirect();
+}
+
+public function handleTwitterCallback()
+{
+    $twitterUser = Socialite::driver('twitter')->user();
+
+    // Twitter might not provide email; handle that
+    $email = $twitterUser->getEmail();
+
+    if (!$email) {
+        return redirect()->route('login')->withErrors([
+            'email' => 'Twitter account does not provide an email. Please use another login method or register manually.',
+        ]);
+    }
+
+    // Find user by email
+    $user = User::where('email', $email)->first();
+
+    if (!$user) {
+        return redirect()->route('login')->withErrors([
+            'email' => 'No account found with this email. Please sign up.',
+        ]);
+    }
+
+    Auth::login($user);
+
+    return redirect('/');
+}
+
 
 
 
