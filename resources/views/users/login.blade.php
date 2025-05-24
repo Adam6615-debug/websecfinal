@@ -2,12 +2,12 @@
 @section('title', 'Login')
 @section('content')
 
-<div class="container-fluid bg-gradient-primary min-vh-100">
+<div class="container-fluid min-vh-100">
     <div class="row justify-content-center align-items-center min-vh-100">
         <div class="col-12 col-sm-8 col-md-6 col-lg-4">
             <div class="card shadow-lg border-0 rounded-lg">
-                <div class="card-header bg-white text-center py-4">
-                    <h3 class="font-weight-light my-2">Welcome Back</h3>
+                <div class="card-header text-center py-4">
+                    <h3 class="font-weight my-2">Welcome Back</h3>
                     <p class="text-muted mb-0">Please sign in to continue</p>
                 </div>
                 
@@ -49,7 +49,7 @@
                     </form>
                 </div>
 
-                <div class="card-footer bg-white text-center py-3">
+                <div class="card-footer text-center py-3">
                     <div class="small">
                         <a href="{{ route('password.request') }}" class="text-decoration-none">
                             <i class="fas fa-key me-1"></i>Forgot Password?
@@ -57,7 +57,7 @@
                     </div>
                 </div>
 
-                <div class="card-footer bg-white border-top-0">
+                <div class="card-footer border-top-0">
                     <div class="text-center mb-3">
                         <span class="text-muted">Or continue with</span>
                     </div>
