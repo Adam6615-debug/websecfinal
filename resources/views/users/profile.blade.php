@@ -44,6 +44,10 @@
                     @if(auth()->user()->hasPermissionTo('edit_users') || auth()->id() == $user->id)
                         <a href="{{ route('users_edit', $user->id) }}" class="btn btn-success">Edit</a>
                     @endif
+
+                    @if(auth()->user()->hasPermissionTo('admin_users'))
+                        <a href="{{ route('roles_editor') }}" class="btn btn-warning">Role Editor</a>
+                    @endif
                 </div>
             </div>
         </div>

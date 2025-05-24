@@ -74,3 +74,12 @@ Route::prefix('auth')->group(function () {
 
 // Email Verification
 Route::get('verify', [UsersController::class, 'verify'])->name('verify');
+
+Route::get('/banned', function () {
+    return view('banned');
+})->name('banned');
+
+
+// Role Editor (Admin only)
+Route::get('/roles-editor', [UsersController::class, 'rolesEditor'])->name('roles_editor')->middleware('auth');
+Route::post('/roles-editor', [UsersController::class, 'saveRole'])->name('roles_save')->middleware('auth');

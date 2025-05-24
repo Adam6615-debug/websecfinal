@@ -24,7 +24,7 @@ class UsersController extends Controller
 
     public function list(Request $request)
     {
-        if (!auth()->user()->hasAnyRole(['Admin', 'Employee'])) abort(401);
+        if (!auth()->user()->hasAnyRole(['Admin', 'Employee', 'Manager'])) abort(401);
 
 
         $query = User::select('id', 'name', 'email', 'credit');
@@ -370,12 +370,28 @@ public function handleTwitterCallback()
     return redirect('/');
 }
 
+    public function rolesEditor(Request $request)
+    {
+        if (!auth()->user()->hasRole('Admin')) abort(401);
+        $roles = \Spatie\Permission\Models\Role::with('permissions')->get();
+        $permissions = \Spatie\Permission\Models\Permission::all();
+        return view('users.roles_editor', compact('roles', 'permissions'));
+    }
 
-
-
-
-
-
+    public function saveRole(Request $request)
+    {
+        if (!auth()->user()->hasRole('Admin')) abort(401);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'permissions' => 'array',
+        ]);
+        $role = $request->id ? \Spatie\Permission\Models\Role::findOrFail($request->id) : new \Spatie\Permission\Models\Role();
+        $role->name = $request->name;
+        $role->guard_name = 'web';
+        $role->save();
+        $role->syncPermissions($request->permissions ?? []);
+        return redirect()->route('roles_editor')->with('success', 'Role saved successfully.');
+    }
 
 }
 
