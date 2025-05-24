@@ -1,68 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Basic Website - @yield('title')</title>
+    <title>Opium Threads - @yield('title')</title>
+    <!-- Bootstrap CSS -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-
-    {{-- Dark mode CSS --}}
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts (Montserrat) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
     <style>
-        .dark-mode {
-            background-color: #121212 !important;
-            color: #e0e0e0 !important;
+        /* Load Heartless Font for Logo */
+        @font-face {
+            font-family: 'Heartless';
+            src: url('{{ asset('fonts/heartless.woff2') }}') format('woff2'),
+                 url('{{ asset('fonts/heartless.woff') }}') format('woff');
+            font-weight: normal;
+            font-style: normal;
         }
-        .dark-mode .card,
-        .dark-mode .table,
-        .dark-mode .form-control,
-        .dark-mode .btn {
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-            border-color: #444;
+        body {
+            background-color: #0d0d0d;
+            color: #d9d9d9;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
         }
-        .dark-mode .btn {
-            background-color: #333;
+        /* Logo Styling */
+        .logo {
+            font-family: 'Heartless', sans-serif;
+            font-size: 2.5rem;
+            color: #000000; /* Black logo */
+            text-transform: uppercase;
+            letter-spacing: 0.2rem;
+            text-shadow: 0 0 10px #000000;
+            animation: glitch 2s linear infinite;
+            text-align: center;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* Navbar Styling */
+        .navbar {
+            background-color: #1a1a1a;
+            border-bottom: 1px solid #b0b0b0;
+            padding: 3rem 0 1rem 0; /* Extra padding for logo */
+            position: relative;
+        }
+        .navbar-brand, .nav-link {
+            color: #d9d9d9 !important;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .nav-link:hover {
+            color: #b0b0b0 !important;
+            text-shadow: 0 0 5px #b0b0b0;
+        }
+        /* General Styling */
+        .card,
+        .table,
+        .form-control,
+        .btn {
+            background-color: #1a1a1a;
+            color: #d9d9d9;
+            border-color: #333;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+        }
+        .btn {
+            background-color: #b0b0b0;
+            color: #0d0d0d;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background-color: #8c8c8c; /* Darker silver */
+            box-shadow: 0 0 10px #b0b0b0;
+        }
+        /* Headings */
+        h1, h2, h3, h4, h5, h6, .card-header {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #b0b0b0;
+            text-transform: uppercase;
+        }
+        /* Container */
+        .container {
+            padding-top: 2rem;
         }
     </style>
 </head>
-<body id="appBody">
-    @include('layouts.menu')
+<body>
+    <!-- Navbar with Logo -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <div class="logo">OPIUM</div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                @include('layouts.menu')
+            </div>
+        </div>
+    </nav>
 
-    {{-- Dark Mode Toggle --}}
-    <div class="container d-flex justify-content-end mt-2">
-        <button class="btn btn-outline-dark btn-sm" onclick="toggleDarkMode()">Toggle Dark Mode</button>
-    </div>
-
+    <!-- Main Content -->
     <div class="container">
         @yield('content')
     </div>
 
-    {{-- Dark Mode Script --}}
-    <script>
-        function toggleDarkMode() {
-            document.getElementById('appBody').classList.toggle('dark-mode');
-        }
-    </script>
+    <!-- Bootstrap JS -->
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 </body>
 </html>
-
-<script>
-    // Apply stored theme preference on page load
-    document.addEventListener("DOMContentLoaded", function () {
-        const isDark = localStorage.getItem('darkMode') === 'true';
-        if (isDark) {
-            document.getElementById('appBody').classList.add('dark-mode');
-        }
-    });
-
-    // Toggle dark mode and store preference
-    function toggleDarkMode() {
-        const body = document.getElementById('appBody');
-        const isDark = body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-</script>
-
