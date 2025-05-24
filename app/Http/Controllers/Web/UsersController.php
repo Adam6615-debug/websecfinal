@@ -293,7 +293,10 @@ class UsersController extends Controller
     }
     public function showAddEmployeePage()
     {
-        return view('users.addemployee'); // You can change this to any view you want to render
+        if (!auth()->user()->hasPermissionTo('add_employee')) {
+            abort(401);
+        }
+        return view('users.addemployee');
     }
 
 public function redirectToGitHub()

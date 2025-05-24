@@ -58,7 +58,6 @@
                         </small>
                     </span>
                     <div>
-                        <button class="btn btn-sm btn-secondary" onclick="editRole({{ $role->id }}, '{{ $role->name }}', @json($role->permissions->pluck('name'))) ">Edit</button>
                         <form action="{{ route('roles_delete', $role->id) }}" method="POST" class="d-inline" id="delete-role-form-{{ $role->id }}">
                             @csrf
                             @method('DELETE')
@@ -72,21 +71,6 @@
     </div>
 </div>
 <script>
-function editRole(id, name, permissions) {
-    document.getElementById('role_id').value = id;
-    document.getElementById('role_name').value = name;
-    // Uncheck all permissions first
-    document.querySelectorAll('input[name="permissions[]"]').forEach(cb => {
-        cb.checked = false;
-    });
-    // Check only those in the role
-    if (Array.isArray(permissions)) {
-        permissions.forEach(function(p) {
-            let cb = document.querySelector('input[name="permissions[]"][value="' + p + '"]');
-            if (cb) cb.checked = true;
-        });
-    }
-}
 function confirmDeleteRole(roleId, roleName) {
     if (confirm('Are you sure you want to delete the role "' + roleName + '"?')) {
         document.getElementById('delete-role-form-' + roleId).submit();
