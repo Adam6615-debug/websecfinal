@@ -16,6 +16,7 @@ use Artisan;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 
 class UsersController extends Controller
 {
@@ -68,7 +69,6 @@ class UsersController extends Controller
 
     public function doRegister(Request $request)
     {
-
         try {
             $this->validate($request, [
                 'name' => ['required', 'string', 'min:5'],
@@ -76,31 +76,28 @@ class UsersController extends Controller
                 'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
             ]);
         } catch (\Exception $e) {
-
             return redirect()->back()->withInput($request->input())->withErrors('Invalid registration information.');
         }
-        
 
-        $user =  new User();
+        // Create user
+        $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = bcrypt($request->password); //Secure
-
+        $user->password = bcrypt($request->password);
+        $user->credit = 0;
         $user->save();
+
         $user->assignRole('Customer');
-        try {
 
-        $title = "Verification Link";
-        $token = Crypt::encryptString(json_encode(['id' => $user->id, 'email' => $user->email]));
-        $link = route("verify", ['token' => $token]);
-        Mail::to($user->email)->send(new VerificationEmail($link, $user->name));
-        } catch (\Exception $e) {
-            return redirect('/')->with('warning', 'Registered, but email verification failed. Please try again.');
-        }
+        // ✅ Log the user in temporarily
+        Auth::login($user);
 
-        return redirect('/')>with('message', 'Registered! Please check your email to verify.');;
+        // ✅ Fire email verification
+        event(new Registered($user));
+
+        return redirect()->route('verification.notice')->with('message', 'Registered! Please check your email to verify.');
     }
-    
+
     public function addEmployee(Request $request)
     {
         // Check if the logged-in user is an admin
@@ -142,33 +139,34 @@ class UsersController extends Controller
         if (!Auth::attempt(['email' => $request->email, 'password' => $request->password]))
             return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
 
-            $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
-            // Check if email is verified
-            if (!$user->email_verified_at) {
-                Auth::logout(); // Ensure no session persists
-                return redirect()->back()
-                    ->withInput($request->input())
-                    ->withErrors('Your email is not verified.');
-            }
-        
+        // Check if email is verified
+        if (!$user->email_verified_at) {
+            Auth::logout(); // Ensure no session persists
+            return redirect()->back()
+                ->withInput($request->input())
+                ->withErrors('Your email is not verified.');
+        }
+
         Auth::setUser($user);
 
         return redirect('/');
     }
 
-    public function verify(Request $request) {
-    try{
-        $decryptedData = json_decode(Crypt::decryptString($request->token), true);
-    } catch (\Exception $e) {
-        abort(400, 'Invalid or expired token.');
-    }
+    public function verify(Request $request)
+    {
+        try {
+            $decryptedData = json_decode(Crypt::decryptString($request->token), true);
+        } catch (\Exception $e) {
+            abort(400, 'Invalid or expired token.');
+        }
         $user = User::find($decryptedData['id']);
-        if(!$user) abort(401);
+        if (!$user) abort(401);
         $user->email_verified_at = Carbon::now();
         $user->save();
         return view('users.verified', compact('user'));
-       }
+    }
     public function doLogout(Request $request)
     {
 
@@ -286,7 +284,7 @@ class UsersController extends Controller
             abort(401);
         }
 
-        $user->password = bcrypt($request->password); 
+        $user->password = bcrypt($request->password);
         $user->save();
 
         return redirect(route('profile', ['user' => $user->id]));
@@ -296,31 +294,31 @@ class UsersController extends Controller
         return view('users.addemployee'); // You can change this to any view you want to render
     }
 
-public function redirectToGitHub()
-{
-    return Socialite::driver('github')->redirect();
-}
-public function handleGitHubCallback()
-{
-    $githubUser = Socialite::driver('github')->stateless()->user();
-
-    // Check if user exists
-    $user = User::where('email', $githubUser->getEmail())->first();
-
-    if (!$user) {
-        return redirect()->route('login')->withErrors([
-            'email' => 'No account found with this email. Please sign up.',
-        ]);
+    public function redirectToGitHub()
+    {
+        return Socialite::driver('github')->redirect();
     }
+    public function handleGitHubCallback()
+    {
+        $githubUser = Socialite::driver('github')->stateless()->user();
 
-    Auth::login($user);
+        // Check if user exists
+        $user = User::where('email', $githubUser->getEmail())->first();
 
-    return redirect('/'); // or your intended home/dashboard page
-}
+        if (!$user) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'No account found with this email. Please sign up.',
+            ]);
+        }
+
+        Auth::login($user);
+
+        return redirect('/'); // or your intended home/dashboard page
+    }
 
     public function redirectToFacebook()
     {
-    return Socialite::driver('facebook')->stateless()->redirect();
+        return Socialite::driver('facebook')->stateless()->redirect();
     }
 
     public function handleFacebookCallback()
@@ -330,45 +328,47 @@ public function handleGitHubCallback()
 
         $user = User::firstOrCreate(
             ['facebook_id' => $userfacebook->getId()],
-        ['facebook_name' => $userfacebook->getName(),
-                'facebook_email' => $userfacebook->getEmail(),]
-            );
-            Auth::login($user)  ;
-    }
-    
-
-
- public function redirectToTwitter()
-{
-    return Socialite::driver('twitter')->redirect();
-}
-
-public function handleTwitterCallback()
-{
-    $twitterUser = Socialite::driver('twitter')->user();
-
-    // Twitter might not provide email; handle that
-    $email = $twitterUser->getEmail();
-
-    if (!$email) {
-        return redirect()->route('login')->withErrors([
-            'email' => 'Twitter account does not provide an email. Please use another login method or register manually.',
-        ]);
+            [
+                'facebook_name' => $userfacebook->getName(),
+                'facebook_email' => $userfacebook->getEmail(),
+            ]
+        );
+        Auth::login($user);
     }
 
-    // Find user by email
-    $user = User::where('email', $email)->first();
 
-    if (!$user) {
-        return redirect()->route('login')->withErrors([
-            'email' => 'No account found with this email. Please sign up.',
-        ]);
+
+    public function redirectToTwitter()
+    {
+        return Socialite::driver('twitter')->redirect();
     }
 
-    Auth::login($user);
+    public function handleTwitterCallback()
+    {
+        $twitterUser = Socialite::driver('twitter')->user();
 
-    return redirect('/');
-}
+        // Twitter might not provide email; handle that
+        $email = $twitterUser->getEmail();
+
+        if (!$email) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Twitter account does not provide an email. Please use another login method or register manually.',
+            ]);
+        }
+
+        // Find user by email
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'No account found with this email. Please sign up.',
+            ]);
+        }
+
+        Auth::login($user);
+
+        return redirect('/');
+    }
 
     public function rolesEditor(Request $request)
     {
@@ -388,7 +388,9 @@ public function handleTwitterCallback()
         // Check for duplicate role name (case-insensitive)
         $existingRole = \Spatie\Permission\Models\Role::whereRaw('LOWER(name) = ?', [strtolower($request->name)])
             ->where('guard_name', 'web')
-            ->when($request->id, function($q) use ($request) { return $q->where('id', '!=', $request->id); })
+            ->when($request->id, function ($q) use ($request) {
+                return $q->where('id', '!=', $request->id);
+            })
             ->first();
         if ($existingRole) {
             return redirect()->back()->withInput()->withErrors(['name' => 'Role name already exists.']);
@@ -412,6 +414,4 @@ public function handleTwitterCallback()
         $role->delete();
         return redirect()->route('roles_editor')->with('success', 'Role deleted successfully.');
     }
-
 }
-
