@@ -12,10 +12,9 @@ use App\Http\Controllers\Auth\GoogleController;
 |--------------------------------------------------------------------------
 */
 
+
 // Home
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ProductsController::class, 'list'])->name('home');
 
 // Authentication
 Route::get('login', [UsersController::class, 'login'])->name('login');
@@ -45,14 +44,15 @@ Route::get('profile/{user?}', [UsersController::class, 'profile'])->name('profil
 Route::get('/customers', [UsersController::class, 'listCustomers'])->name('customers');
 
 // Products
-Route::prefix('products')->group(function () {
-    Route::get('/', [ProductsController::class, 'list'])->name('products_list');
-    Route::get('edit/{product?}', [ProductsController::class, 'edit'])->name('products_edit');
-    Route::post('save/{product?}', [ProductsController::class, 'save'])->name('products_save');
-    Route::get('delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
-    Route::post('buy/{product}', [ProductsController::class, 'buy'])->name('products_buy');
-});
 
+Route::get('/products', [ProductsController::class, 'list'])->name('products_list');
+Route::get('/products/{product}/purchase', [ProductsController::class, 'purchaseDetails'])->name('products_purchase_details');
+Route::post('/products/{product}/buy', [ProductsController::class, 'buy'])->name('products_buy');
+Route::post('/products/{product}/refund', [ProductsController::class, 'refund'])->name('products_refund');
+Route::get('/my-orders', [ProductsController::class, 'viewOrders'])->name('products_orders');
+Route::get('/products/{product}/edit', [ProductsController::class, 'edit'])->name('products_edit');
+Route::post('/products/{product?}/save', [ProductsController::class, 'save'])->name('products_save');
+Route::delete('/products/{product}/delete', [ProductsController::class, 'delete'])->name('products_delete');
 // Orders
 Route::get('/orders', [ProductsController::class, 'viewOrders'])->name('orders')->middleware('auth');
 

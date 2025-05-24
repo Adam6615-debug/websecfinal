@@ -316,7 +316,7 @@
                             <a class="btn btn-outline-primary" href="{{ route('login') }}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-outline-success" href="{{ route('register') }}">Register</a>A
+                            <a class="btn btn-outline-success" href="{{ route('register') }}">Register</a>
                         </li>
                     @endif
                 </ul>

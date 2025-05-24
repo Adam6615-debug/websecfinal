@@ -3,34 +3,51 @@
 @section('title', 'Main Page')
 
 @section('content')
-
 <section class="opium-mode">
     <div class="container">
         <div class="row mt-4">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <h1 class="glitch">Welcome to Opium Threads!</h1>
                 <p>Explore our exclusive streetwear collection:</p>
-                <ul>
-                    @can('show_users')
-                        <li><a href="{{ route('users') }}">Manage Users</a></li>
-                    @endcan
-                </ul>
+                
+                <div class="row">
+                    @foreach($products as $product)
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <img src="{{ $product->image_url }}" class="card-img-top" alt="{{ $product->name }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ $product->name }}</h5>
+                                    <p class="card-text">{{ $product->description }}</p>
+                                    <p class="card-text"><strong>Price: ${{ $product->price }}</strong></p>
+                                    
+                                    @auth
+                                        <a href="{{ route('purchase.details', $product->id) }}" class="btn btn-primary">Buy</a>
+                                        <a href="{{ route('refund.request', $product->id) }}" class="btn btn-warning">Refund</a>
+                                        
+                                        @can('manage_products')
+                                            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-success">Edit</a>
+                                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                            </form>
+                                        @endcan
+                                    @else
+                                        <a href="{{ route('login') }}" class="btn btn-primary">Login to Buy</a>
+                                    @endauth
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                @can('manage_products')
+                    <div class="mt-4">
+                        <a href="{{ route('products.create') }}" class="btn btn-success">Add New Product</a>
+                    </div>
+                @endcan
             </div>
         </div>
-    </section>
-
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-body">
-                <p>Opium Threads delivers raw, unfiltered streetwear that screams rebellion. Our designs are built for those who live loud and fearless. Join the movement.</p>
-                <p>Sign up to unlock exclusive drops and features!</p>
-                @auth
-                    <a href="{{ route('profile') }}" class="btn btn-primary">Go to Profile</a>
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-success">Login</a>
-                    <a href="{{ route('register') }}" class="btn btn-warning">Register</a>
-                @endauth
-
-        </div>
     </div>
+</section>
 @endsection
