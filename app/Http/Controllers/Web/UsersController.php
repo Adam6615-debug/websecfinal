@@ -26,7 +26,7 @@ class UsersController extends Controller
 
     public function list(Request $request)
     {
-        if (!auth()->user()->hasAnyRole(['Admin', 'Employee', 'Manager'])) abort(401);
+        if (!auth()->user()->hasAnyRole(['Admin', 'Employee'])) abort(401);
 
 
         $query = User::select('id', 'name', 'email', 'credit');
@@ -376,18 +376,10 @@ class UsersController extends Controller
 
     public function rolesEditor(Request $request)
     {
-        if (!auth()->user()->hasRole('Admin')) abort(401);
-        $roles = \Spatie\Permission\Models\Role::with('permissions')->get();
-        $permissions = \Spatie\Permission\Models\Permission::all();
-        return view('users.roles_editor', compact('roles', 'permissions'));
-    }
-
-    public function saveRole(Request $request)
-    {
-        if (!auth()->user()->hasRole('Admin')) abort(401);
         $request->validate([
             'name' => 'required|string|max:255',
-            'permissions' => 'array',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
         ]);
         // Check for duplicate role name (case-insensitive)
         $existingRole = \Spatie\Permission\Models\Role::whereRaw('LOWER(name) = ?', [strtolower($request->name)])
@@ -407,16 +399,24 @@ class UsersController extends Controller
         return redirect()->route('roles_editor')->with('success', 'Role saved successfully.');
     }
 
-    public function deleteRole($id)
+    public function apiLogin(Request $request)
     {
-        if (!auth()->user()->hasRole('Admin')) abort(401);
-        $role = \Spatie\Permission\Models\Role::findOrFail($id);
-        // Prevent deleting protected roles if needed (optional)
-        // if (in_array($role->name, ['Admin', 'Employee', 'Manager'])) {
-        //     return redirect()->back()->withErrors(['name' => 'Cannot delete protected role.']);
-        // }
-        $role->delete();
-        return redirect()->route('roles_editor')->with('success', 'Role deleted successfully.');
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        return response()->json([
+            'message' => 'Login successful',
+            'user' => $user
+        ]);
     }
 
     public function showForgotPasswordForm()

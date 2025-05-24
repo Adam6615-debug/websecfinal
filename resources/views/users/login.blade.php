@@ -41,7 +41,6 @@
           <a href="{{ route('google.login') }}" class="btn btn-success">Login with Google</a>
           <a href="{{ route('redirectToFacebook') }}" class="btn btn-primary">Login with Facebook</a>
           <a href="{{ route('redirectToGitHub') }}" class="btn btn-dark">Login with GitHub</a>
-          <a href="{{ route('redirectToTwitter') }}" class="btn btn-dark">Login with Twitter</a>
         </div>
       </form>
     </div>

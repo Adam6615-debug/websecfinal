@@ -1,0 +1,41 @@
+{
+	"folders": [
+		{
+			"path": "../my_app/.dart_tool"
+		},
+		{
+			"path": "../my_app/.idea"
+		},
+		{
+			"path": "../my_app/.idea/libraries"
+		},
+		{
+			"path": "../my_app/.idea/runConfigurations"
+		},
+		{
+			"path": "../my_app/android"
+		},
+		{
+			"path": "../my_app/ios"
+		},
+		{
+			"path": "../my_app/lib"
+		},
+		{
+			"path": "../my_app/linux"
+		},
+		{
+			"path": "../my_app/macos"
+		},
+		{
+			"path": "../my_app/test"
+		},
+		{
+			"path": "../my_app/web"
+		},
+		{
+			"path": "../my_app/windows"
+		}
+	],
+	"settings": {}
+}

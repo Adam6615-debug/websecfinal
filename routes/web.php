@@ -14,6 +14,9 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 |--------------------------------------------------------------------------
 */
 
+// Test Route
+Route::get('/test-api', [TestController::class, 'test']);
+
 // Home
 Route::get('/', function () {
     return view('welcome');
@@ -68,10 +71,6 @@ Route::prefix('auth')->group(function () {
 
     Route::get('github', [UsersController::class, 'redirectToGitHub'])->name('redirectToGitHub');
     Route::get('github/callback', [UsersController::class, 'handleGitHubCallback'])->name('handleGitHubCallback');
-    
-    Route::get('twitter', [UsersController::class, 'redirectToTwitter'])->name('redirectToTwitter');
-
-
 });
 
 // Email Verification
