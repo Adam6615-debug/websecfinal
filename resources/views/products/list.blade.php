@@ -97,7 +97,6 @@
                             <i class="bi bi-tag"></i> Model: {{$product->model}}
                         </small>
                     </div>
-
                     <div class="d-grid gap-2">
                         @if(auth()->user() && auth()->user()->hasRole('Customer'))
                             @if(auth()->user()->credit >= $product->price)

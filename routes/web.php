@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\ProductsController;
 use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Auth\GoogleController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +76,26 @@ Route::prefix('auth')->group(function () {
 
 // Email Verification
 Route::get('verify', [UsersController::class, 'verify'])->name('verify');
+
+
+// Show the verify notice page (after register)
+Route::get('/email/verify', function () {
+    return view('users.verify-notice'); // لازم تعمل الملف ده
+})->middleware('auth')->name('verification.notice');
+
+// Handle verify link click
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/'); // أو أي صفحة بعد التفعيل 
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+// Resend the verification link
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('status', 'verification-link-sent');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+
 
 Route::get('/banned', function () {
     return view('banned');
