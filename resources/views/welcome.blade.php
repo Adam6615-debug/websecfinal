@@ -5,16 +5,6 @@
 <div class="row mt-4">
     <div class="col-md-6">
         <h1>Welcome to Our Website!</h1>
-        <p>We offer a variety of tools to help you with numbers, including:</p>
-        <ul>
-            <li><a href="{{ url('/even') }}">Even Numbers Generator</a></li>
-            <li><a href="{{ url('/prime') }}">Prime Numbers Generator</a></li>
-            <li><a href="{{ url('/multable') }}">Multiplication Table Generator</a></li>
-            <li><a href="{{ route('products_list') }}">Product Listings</a></li>
-            @can('show_users')
-            <li><a href="{{ route('users') }}">Manage Users</a></li>
-            @endcan
-        </ul>
     </div>
     
 </div>
