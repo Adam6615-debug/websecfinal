@@ -6,7 +6,7 @@ use App\Http\Controllers\Web\ProductsController;
 use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\TestController;
-
+use App\Http\Controllers\Api\CustomerController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,6 +16,14 @@ use App\Http\Controllers\TestController;
 // Test Route
 Route::get('/test-api', [TestController::class, 'test']);
 
+// Protected routes with token-based auth (e.g. Sanctum/Passport)
+Route::middleware('auth:api')->group(function () {
+    Route::get('/customer/profile', [CustomerController::class, 'profile']);
+    Route::get('/customer/orders', [CustomerController::class, 'orders']);
+});
+
+// Public route (optional)
+Route::get('/products', [CustomerController::class, 'products']);
 // Home
 Route::get('/', function () {
     return view('welcome');
