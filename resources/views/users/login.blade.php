@@ -31,6 +31,10 @@
           <button type="submit" class="btn btn-primary">Login</button>
         </div>
 
+        <div class="mb-3 text-center">
+          <a href="{{ route('password.request') }}" class="btn btn-link">Forgot Password?</a>
+        </div>
+
         <hr>
 
         <div class="d-grid gap-2">

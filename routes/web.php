@@ -84,3 +84,9 @@ Route::get('/banned', function () {
 Route::get('/roles-editor', [UsersController::class, 'rolesEditor'])->name('roles_editor')->middleware('auth');
 Route::post('/roles-editor', [UsersController::class, 'saveRole'])->name('roles_save')->middleware('auth');
 Route::delete('/roles/{id}/delete', [App\Http\Controllers\Web\UsersController::class, 'deleteRole'])->name('roles_delete');
+
+// forgot password
+Route::get('password/forgot', [UsersController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('password/email', [UsersController::class, 'sendResetPassword'])->name('password.email');
+Route::get('/password/change', [UsersController::class, 'showChangePasswordForm'])->name('password.change');
+Route::post('/password/change', [UsersController::class, 'updatePassword'])->name('password.update');

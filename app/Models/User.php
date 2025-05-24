@@ -26,6 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'credit',
+        'force_change_password'
     ];
 
     /**
@@ -43,11 +44,12 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+  protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'force_change_password' => 'boolean',
         ];
     }
 }

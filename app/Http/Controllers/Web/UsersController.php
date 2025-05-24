@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 use App\Mail\VerificationEmail;
+use App\Mail\ResetPasswordMail;
 use Artisan;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\Controller;
@@ -414,6 +415,28 @@ public function handleTwitterCallback()
         // }
         $role->delete();
         return redirect()->route('roles_editor')->with('success', 'Role deleted successfully.');
+    }
+
+    public function showForgotPasswordForm()
+    {
+        return view('users.forgot_password');
+    }
+
+    public function sendResetPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email|exists:users,email']);
+        $user = User::where('email', $request->email)->first();
+        $newPassword = bin2hex(random_bytes(4)); // 8-char random password
+        $user->password = bcrypt($newPassword);
+        $user->force_change_password = true;
+        $user->save();
+        try {
+            Mail::to($user->email)->send(new ResetPasswordMail($user->name, $newPassword));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send reset password email: ' . $e->getMessage());
+            return back()->withErrors('Failed to send reset password email.');
+        }
+        return redirect()->route('login')->with('success', 'A new password has been sent to your email.');
     }
 
 }
