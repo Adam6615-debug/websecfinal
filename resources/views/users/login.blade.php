@@ -43,7 +43,6 @@
           <a href="{{ route('redirectToGitHub') }}" class="btn btn-dark">Login with GitHub</a>
           <a href="{{ route('redirectToTwitter') }}" class="btn btn-dark">Login with Twitter</a>
         </div>
-
       </form>
     </div>
   </div>
