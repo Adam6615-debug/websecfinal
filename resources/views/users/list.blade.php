@@ -64,20 +64,20 @@
             <td>
               <div class="d-flex flex-wrap gap-1">
                 @can('edit_users')
-                <a class="btn btn-sm btn-primary" href="{{ route('users_edit', [$user->id]) }}">Edit</a>
+                <a class="btn btn-sm btn-primary" href="{{ route('users_edit', [$user->id]) }}"> <i class="bi bi-pencil"></i> Edit</a>
                 @endcan
 
                 @can('admin_users')
-                <a class="btn btn-sm btn-secondary" href="{{ route('edit_password', [$user->id]) }}">Password</a>
+                <a class="btn btn-sm btn-secondary" href="{{ route('edit_password', [$user->id]) }}"> <i class="bi bi-key"></i> Password</a>
                 @endcan
 
                 @can('delete_users')
-                <a class="btn btn-sm btn-danger" href="{{ route('users_delete', [$user->id]) }}">Delete</a>
+                <a class="btn btn-sm btn-danger" href="{{ route('users_delete', [$user->id]) }}"> <i class="bi bi-trash"></i> Delete</a>
                 @endcan
 
                 @canany(['admin_users', 'edit_users'])
                 <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#addCreditModal{{ $user->id }}">
-                  + Credit
+                    <i class="bi bi-credit-card"></i> Credit
                 </button>
                 @endcanany
               </div>
