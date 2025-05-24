@@ -2,49 +2,80 @@
 @section('title', 'Login')
 @section('content')
 
-<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-  <div class="card shadow-lg p-4 col-sm-8 col-md-6 col-lg-4">
-    <h4 class="text-center mb-3">Login to Your Account</h4>
-    
-    <div class="card-body">
-      <form action="{{ route('do_login') }}" method="post">
-        {{ csrf_field() }}
+<div class="container-fluid bg-gradient-primary min-vh-100">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-white text-center py-4">
+                    <h3 class="font-weight-light my-2">Welcome Back</h3>
+                    <p class="text-muted mb-0">Please sign in to continue</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form action="{{ route('do_login') }}" method="post">
+                        @csrf
 
-        {{-- Show validation errors --}}
-        @foreach($errors->all() as $error)
-          <div class="alert alert-danger">
-            <strong>Error:</strong> {{ $error }}
-          </div>
-        @endforeach
+                        @if($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <ul class="mb-0">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
 
-        <div class="form-group mb-3">
-          <label for="email" class="form-label">Email:</label>
-          <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                            <label for="email">Email address</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            <label for="password">Password</label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                            <label class="form-check-label" for="remember">Remember me</label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-lg" type="submit">
+                                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-footer bg-white text-center py-3">
+                    <div class="small">
+                        <a href="{{ route('password.request') }}" class="text-decoration-none">
+                            <i class="fas fa-key me-1"></i>Forgot Password?
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-white border-top-0">
+                    <div class="text-center mb-3">
+                        <span class="text-muted">Or continue with</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('google.login') }}" class="btn btn-outline-danger">
+                            <i class="fab fa-google me-2"></i>Continue with Google
+                        </a>
+                        <a href="{{ route('redirectToFacebook') }}" class="btn btn-outline-primary">
+                            <i class="fab fa-facebook-f me-2"></i>Continue with Facebook
+                        </a>
+                        <a href="{{ route('redirectToGitHub') }}" class="btn btn-outline-dark">
+                            <i class="fab fa-github me-2"></i>Continue with GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="form-group mb-4">
-          <label for="password" class="form-label">Password:</label>
-          <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
-        </div>
-
-        <div class="d-grid mb-3">
-          <button type="submit" class="btn btn-primary">Login</button>
-        </div>
-
-        <div class="mb-3 text-center">
-          <a href="{{ route('password.request') }}" class="btn btn-link">Forgot Password?</a>
-        </div>
-
-        <hr>
-
-        <div class="d-grid gap-2">
-          <a href="{{ route('google.login') }}" class="btn btn-success">Login with Google</a>
-          <a href="{{ route('redirectToFacebook') }}" class="btn btn-primary">Login with Facebook</a>
-          <a href="{{ route('redirectToGitHub') }}" class="btn btn-dark">Login with GitHub</a>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 @endsection
