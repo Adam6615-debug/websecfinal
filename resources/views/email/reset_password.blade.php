@@ -27,7 +27,7 @@
             <p style="margin-top:32px; color:#888; font-size:14px;">If you did not request a password reset, please contact support immediately.</p>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} BiT. All rights reserved.
+            &copy; {{ date('Y') }} Opium. All rights reserved.
         </div>
     </div>
 </body>
