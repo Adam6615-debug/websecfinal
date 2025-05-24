@@ -14,4 +14,12 @@ class Product extends Model  {
         'photo',
         'quantity',
     ];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }
