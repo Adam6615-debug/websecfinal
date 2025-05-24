@@ -37,7 +37,7 @@
   <div class="card-body">
     <div class="table-responsive">
       <table class="table table-hover align-middle">
-        <thead class="table-light">
+        <thead class="table">
           <tr>
             <th>ID</th>
             <th>Name</th>

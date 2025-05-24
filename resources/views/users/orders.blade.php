@@ -25,8 +25,8 @@
 
 <div class="card shadow-sm">
   <div class="card-body">
-    <table class="table table-hover align-middle">
-      <thead class="table-light">
+    <table class="table table-hover">
+      <thead class="table">
         <tr>
           <th>Order ID</th>
           <th>Product Name</th>
