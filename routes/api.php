@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductApiController;
+use App\Http\Controllers\Api\CustomerController;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +92,10 @@ Route::get('/products/{id}', [ProductApiController::class, 'view']);
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/products/{id}/buy', [ProductApiController::class, 'buy']);
+    
+    // Customer routes
+    Route::get('/customer/profile', [CustomerController::class, 'profile']);
+    Route::get('/customer/orders', [CustomerController::class, 'orders']);
     
     // Logout route
     Route::post('/logout', function (Request $request) {
