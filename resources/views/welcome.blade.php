@@ -1,7 +1,9 @@
 @extends('layouts.master')
-@section('title', 'Opium Threads')
+
+@section('title', 'Main Page')
 
 @section('content')
+
 <section class="opium-mode">
     <div class="container">
         <div class="row mt-4">
