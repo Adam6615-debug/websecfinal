@@ -401,5 +401,17 @@ public function handleTwitterCallback()
         return redirect()->route('roles_editor')->with('success', 'Role saved successfully.');
     }
 
+    public function deleteRole($id)
+    {
+        if (!auth()->user()->hasRole('Admin')) abort(401);
+        $role = \Spatie\Permission\Models\Role::findOrFail($id);
+        // Prevent deleting protected roles if needed (optional)
+        // if (in_array($role->name, ['Admin', 'Employee', 'Manager'])) {
+        //     return redirect()->back()->withErrors(['name' => 'Cannot delete protected role.']);
+        // }
+        $role->delete();
+        return redirect()->route('roles_editor')->with('success', 'Role deleted successfully.');
+    }
+
 }
 

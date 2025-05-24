@@ -83,3 +83,4 @@ Route::get('/banned', function () {
 // Role Editor (Admin only)
 Route::get('/roles-editor', [UsersController::class, 'rolesEditor'])->name('roles_editor')->middleware('auth');
 Route::post('/roles-editor', [UsersController::class, 'saveRole'])->name('roles_save')->middleware('auth');
+Route::delete('/roles/{id}/delete', [App\Http\Controllers\Web\UsersController::class, 'deleteRole'])->name('roles_delete');
