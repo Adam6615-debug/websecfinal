@@ -385,6 +385,14 @@ public function handleTwitterCallback()
             'name' => 'required|string|max:255',
             'permissions' => 'array',
         ]);
+        // Check for duplicate role name (case-insensitive)
+        $existingRole = \Spatie\Permission\Models\Role::whereRaw('LOWER(name) = ?', [strtolower($request->name)])
+            ->where('guard_name', 'web')
+            ->when($request->id, function($q) use ($request) { return $q->where('id', '!=', $request->id); })
+            ->first();
+        if ($existingRole) {
+            return redirect()->back()->withInput()->withErrors(['name' => 'Role name already exists.']);
+        }
         $role = $request->id ? \Spatie\Permission\Models\Role::findOrFail($request->id) : new \Spatie\Permission\Models\Role();
         $role->name = $request->name;
         $role->guard_name = 'web';
