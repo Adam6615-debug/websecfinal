@@ -312,13 +312,27 @@ class UsersController extends Controller
             );
             Auth::login($user)  ;
     }
+    public function redirectToGitHub()
+    {
+        return Socialite::driver('github')->redirect();
+    }
+    public function handleGitHubCallback()
+    {
+        $githubUser = Socialite::driver('github')->stateless()->user();
     
-
-
-
-
-
-
+        // Check if user exists
+        $user = User::where('email', $githubUser->getEmail())->first();
+    
+        if (!$user) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'No account found with this email. Please sign up.',
+            ]);
+        }
+    
+        Auth::login($user);
+    
+        return redirect('/'); // or your intended home/dashboard page
+    }
 
 }
 
