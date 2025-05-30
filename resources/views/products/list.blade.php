@@ -1,4 +1,7 @@
 @extends('layouts.master')
+@php
+use Illuminate\Support\Str;
+@endphp
 @section('title', 'Test Page')
 @section('content')
 <div class="row mt-2">
@@ -73,8 +76,7 @@
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">{{$product->name}}</h5>
-                    <p class="card-text text-muted">{{ Str::limit($product->description, 100) }}</p>
-                    
+                    <p class="card-text text-muted">{{ Str::limit(value: $product->description, limit: 100) }}</p>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="text-primary mb-0">${{ number_format($product->price, 2) }}</h4>
                         <span class="badge bg-secondary">SKU: {{$product->code}}</span>

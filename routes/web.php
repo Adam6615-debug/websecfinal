@@ -64,6 +64,8 @@ Route::prefix('products')->group(function () {
     Route::post('save/{product?}', [ProductsController::class, 'save'])->name('products_save');
     Route::get('delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
     Route::post('buy/{product}', [ProductsController::class, 'buy'])->name('products_buy');
+    Route::get('/category/{type}', [ProductsController::class, 'showCategory'])->name('category');
+
 });
 
 // Orders

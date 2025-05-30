@@ -138,4 +138,11 @@ public function viewOrders()
 
 		return redirect()->route('products_list');
 	}
+	public function showCategory($type)
+	{
+    $products = Product::where('category', $type)->get();
+
+    return view('categories.' . $type, compact('products'));
+	}
+
 }
